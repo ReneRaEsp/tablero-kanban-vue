@@ -2,12 +2,14 @@
   <Header />
   <div class="board">
     <div class="carril">
-      <h2>Todo</h2>
+      <h2 class="ph">Todo</h2>
       <Container
         group-name="trello"
         @drag-start="handleDragStart('todo', $event)"
         @drop="handleDrop('todo', $event)"
+        :tag="{ props: { class: 'cont' } }"
         :get-child-payload="getChildPayload"
+        :drop-placeholder="{ className: 'placeholder' }"
       >
         <Draggable v-for="card in cards.todo" :key="card.id">
           <Card>
@@ -22,7 +24,9 @@
         group-name="trello"
         @drag-start="handleDragStart('doing', $event)"
         @drop="handleDrop('doing', $event)"
+        :tag="{ props: { class: 'cont' } }"
         :get-child-payload="getChildPayload"
+        :drop-placeholder="{ className: 'placeholder' }"
       >
         <Draggable v-for="card in cards.doing" :key="card.id">
           <Card> {{ card.text }} </Card>
@@ -35,7 +39,9 @@
         group-name="trello"
         @drag-start="handleDragStart('done', $event)"
         @drop="handleDrop('done', $event)"
+        :tag="{ props: { class: 'cont' } }"
         :get-child-payload="getChildPayload"
+        :drop-placeholder="{ class: 'placeholder' }"
       >
         <Draggable v-for="card in cards.done" :key="card.id">
           <Card>
@@ -63,31 +69,31 @@ export default {
     });
 
     const draggingCard = ref({
-      carril: '',
+      carril: "",
       index: -1,
-      cardData: {}
+      cardData: {},
     });
 
     const handleDragStart = (carril, dragResult) => {
       const { payload, isSource } = dragResult;
-      console.log(  )
+      console.log();
       if (isSource) {
         draggingCard.value = {
           carril: carril,
           index: payload,
           cardData: {
-            ...cards.value[carril][payload]
-          }
-        }
+            ...cards.value[carril][payload],
+          },
+        };
       }
-        
+
       console.log(payload);
-      console.log( dragResult );
+      console.log(dragResult);
     };
     const handleDrop = (carril, dropResult) => {
       const { removedIndex, addedIndex } = dropResult;
 
-      if (carril == draggingCard.value.carril && removedIndex == addedIndex){
+      if (carril == draggingCard.value.carril && removedIndex == addedIndex) {
         return;
       }
 
@@ -97,17 +103,16 @@ export default {
       if (addedIndex !== null) {
         cards.value[carril].splice(addedIndex, 0, draggingCard.value.cardData);
       }
-
     };
-    const getChildPayload = (index) =>{
-      return(index );
+    const getChildPayload = (index) => {
+      return index;
     };
 
     return {
       cards,
       handleDrop,
       handleDragStart,
-      getChildPayload
+      getChildPayload,
     };
   },
   components: {
@@ -153,6 +158,41 @@ body {
       background: none;
       background: rgba(50, 100, 170, 0.6);
     }
+    .placeholder {
+      background: rgba(30, 130, 21, 0.6);
+      height: 2rem;
+      width: 100%;
+      border-radius: 0.8rem;
+    }
+    .cont {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-width: 10rem;
+      width: 100%;
+      background: rgba(20, 200, 210, .34);
+      height: 100%;
+      padding-bottom: 2rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      dropPlaceholder {
+        background: #fff;
+        height: 2rem;
+        width: 10rem;
+      }
+      :placeholder {
+        background: #fff;
+        height: 2rem;
+        width: 100%;
+      }
+    }
   }
+}
+.placeholder {
+  background: rgba(30, 130, 21, 0.9);
+  height: 2rem;
+  width: 10rem;
+  border-radius: 0.8rem;
 }
 </style>
